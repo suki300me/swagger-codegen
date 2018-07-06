@@ -1,0 +1,40 @@
+/**
+ * @author Sukhitha Amarakoon (samarakoon@virtusa.com)
+ */
+package {{package}};
+
+import org.bian.dto.*;
+
+{{#operations}}
+public interface {{classname}}Service {
+
+{{#operation}}
+ {{#actionTerms}}
+  {{#initiate}}
+	{{returnType}} initiate({{#bodyParam}}{{baseType}}{{/bodyParam}} request);
+	
+  {{/initiate}}
+  {{#create}}
+	{{returnType}} create({{#bodyParam}}{{baseType}}{{/bodyParam}} request);
+	
+  {{/create}}
+  {{#activate}}
+	{{returnType}} activate({{#bodyParam}}{{baseType}}{{/bodyParam}} request);
+	
+  {{/activate}}
+  {{#evaluate}}
+	{{returnType}} evaluate({{#bodyParam}}{{baseType}}{{/bodyParam}} request);
+	
+  {{/evaluate}}
+  {{#record}}
+	{{returnType}} record(String id, {{#bodyParam}}{{baseType}}{{/bodyParam}} request);
+	
+  {{/record}}
+  {{#execute}}
+	{{returnType}} execute(String id, {{#bodyParam}}{{baseType}}{{/bodyParam}} request);
+	
+  {{/execute}}
+ {{/actionTerms}}
+{{/operation}}
+}
+{{/operations}}

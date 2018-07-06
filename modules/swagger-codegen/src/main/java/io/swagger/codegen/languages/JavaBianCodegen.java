@@ -54,7 +54,10 @@ public class JavaBianCodegen extends AbstractJavaCodegen
 
     protected String title = "swagger-petstore";
     protected String configPackage = "io.swagger.configuration";
-    protected String basePackage = "io.swagger";
+    protected String basePackage = "org.bian";
+    protected String dtoPackage = "org.bian.dto";
+    protected String controllerPackage = "org.bian.controller";
+    protected String servicePackage = "org.bian.service";
     protected boolean interfaceOnly = false;
     protected boolean delegatePattern = false;
     protected boolean delegateMethod = false;
@@ -73,9 +76,9 @@ public class JavaBianCodegen extends AbstractJavaCodegen
         outputFolder = "generated-code/javaSpring";
         apiTestTemplateFiles.clear(); // TODO: add test template
         embeddedTemplateDir = templateDir = "JavaBian";
-        apiPackage = "io.swagger.api";
-        modelPackage = "io.swagger.model";
-        invokerPackage = "io.swagger.api";
+        apiPackage = "org.bian.service";
+        modelPackage = "org.bian.dto";
+        invokerPackage = "org.bian";
         artifactId = "swagger-spring";
 
         additionalProperties.put(CONFIG_PACKAGE, configPackage);
@@ -235,13 +238,26 @@ public class JavaBianCodegen extends AbstractJavaCodegen
             }
         }
 
-        supportingFiles.add(new SupportingFile("pom.mustache", "", "pom.xml"));
-        supportingFiles.add(new SupportingFile("README.mustache", "", "README.md"));
+//        supportingFiles.add(new SupportingFile("pom.mustache", "", "pom.xml"));
+//        supportingFiles.add(new SupportingFile("README.mustache", "", "README.md"));
 
         if (!this.interfaceOnly) {
             apiTemplateFiles.put("apiController.mustache", "Controller.java");
             apiTemplateFiles.put("service.mustache", "Service.java");
             apiTemplateFiles.put("serviceImpl.mustache", "ServiceImpl.java");
+
+            supportingFiles.add(new SupportingFile("gradle.mustache", "", "gradle.properties"));
+            supportingFiles.add(new SupportingFile("gradlew.mustache", "", "gradlew"));
+            supportingFiles.add(new SupportingFile("gradlew.bat.mustache", "", "gradlew.bat"));
+            supportingFiles.add(new SupportingFile("build.mustache", "", "build.gradle"));
+            supportingFiles.add(new SupportingFile("settings.mustache", "", "settings.gradle"));
+            
+          supportingFiles.add(new SupportingFile("application.java.mustache",
+                  (sourceFolder + File.separator + basePackage).replace(".", java.io.File.separator), "Application.java"));
+            
+//          supportingFiles.add(new SupportingFile("apiException.mustache",
+//                  (sourceFolder + File.separator + apiPackage).replace(".", java.io.File.separator), "ApiException.java"));
+            
         } else if ( this.swaggerDocketConfig && !library.equals(SPRING_CLOUD_LIBRARY)) {
             supportingFiles.add(new SupportingFile("swaggerDocumentationConfig.mustache",
                     (sourceFolder + File.separator + configPackage).replace(".", java.io.File.separator), "SwaggerDocumentationConfig.java"));
@@ -657,10 +673,31 @@ public class JavaBianCodegen extends AbstractJavaCodegen
 		if (urlChunks.length >= 3) {
 			op.serviceOperation = urlChunks[0];
 			op.controlRecord = urlChunks[1];
-			op.actionTermTitleCase = StringUtils.capitalize(urlChunks[urlChunks.length - 1]);
-			op.actionTermCamelCase = WordUtils.uncapitalize(urlChunks[urlChunks.length - 1]);
+			op.actionTermCamelCase = this.resolveActionTerm(WordUtils.uncapitalize(urlChunks[urlChunks.length - 1]));
+			op.actionTermTitleCase = StringUtils.capitalize(op.actionTermCamelCase);
 			op.actionTerms.put(op.actionTermCamelCase, true);
 		}
         return op;
+    }
+    
+    private String resolveActionTerm(String urlChunk) {
+    	switch(urlChunk) {
+    	case "initiation" : return "initiate";
+    	case "creation" : return "create";
+    	case "activation" : return "activate";
+    	case "registration" : return "register"; //??????????
+    	case "configuration" : return "configure";
+    	case "updation" : return "update";
+    	case "recording" : return "record";
+    	case "execution" : return "execute";
+    	case "evaluation" : return "evaluate";
+    	case "provision" : return "provide";
+    	case "authorization" : return "authorize";
+    	case "requisition" : return "request";
+    	case "arrangement" : return "terminate";
+    	case "notification" : return "notify";
+    	case "retrieve" : return "retrieve"; //?????????
+    	}
+    	return urlChunk;
     }
 }

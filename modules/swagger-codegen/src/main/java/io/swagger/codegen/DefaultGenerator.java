@@ -24,6 +24,7 @@ import java.util.TreeSet;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -221,6 +222,7 @@ public class DefaultGenerator extends AbstractGenerator implements Generator {
         }
         if (info.getTitle() != null) {
             config.additionalProperties().put("appName", config.escapeText(info.getTitle()));
+            config.additionalProperties().put("projName", StringUtils.replace(WordUtils.capitalize(config.escapeText(info.getTitle())), " ", ""));
         }
         if (info.getVersion() != null) {
             config.additionalProperties().put("appVersion", config.escapeText(info.getVersion()));

@@ -1,0 +1,58 @@
+/**
+ * @author Sukhitha Amarakoon (samarakoon@virtusa.com)
+ */
+package {{package}};
+
+import com.google.gson.Gson;
+import org.bian.dto.*;
+
+{{#operations}}
+public class {{classname}}ServiceImpl implements {{classname}}Service {
+	private Gson gson = null;
+	
+	public {{classname}}ServiceImpl() {
+		gson = new Gson();
+	}
+
+{{#operation}}
+ {{#actionTerms}}
+  {{#initiate}}
+	public {{returnType}} initiate(String id, {{#bodyParam}}{{baseType}}{{/bodyParam}} request){
+		return gson.fromJson("{{#examples}}{{#lambdaRemoveLineBreak}}{{#lambdaEscapeDoubleQuote}}{{{example}}}{{/lambdaEscapeDoubleQuote}}{{/lambdaRemoveLineBreak}}{{/examples}}", {{returnType}}.class);
+	}
+	
+  {{/initiate}}
+  {{#create}}
+	public {{returnType}} create(String id, {{#bodyParam}}{{baseType}}{{/bodyParam}} request){
+		return gson.fromJson("{{#examples}}{{#lambdaRemoveLineBreak}}{{#lambdaEscapeDoubleQuote}}{{{example}}}{{/lambdaEscapeDoubleQuote}}{{/lambdaRemoveLineBreak}}{{/examples}}", {{returnType}}.class);
+	}
+	
+  {{/create}}
+  {{#activate}}
+	public {{returnType}} activate(String id, {{#bodyParam}}{{baseType}}{{/bodyParam}} request){
+		return gson.fromJson("{{#examples}}{{#lambdaRemoveLineBreak}}{{#lambdaEscapeDoubleQuote}}{{{example}}}{{/lambdaEscapeDoubleQuote}}{{/lambdaRemoveLineBreak}}{{/examples}}", {{returnType}}.class);
+	}
+	
+  {{/activate}}
+  {{#evaluate}}
+	public {{returnType}} evaluate(String id, {{#bodyParam}}{{baseType}}{{/bodyParam}} request){
+		return gson.fromJson("{{#examples}}{{#lambdaRemoveLineBreak}}{{#lambdaEscapeDoubleQuote}}{{{example}}}{{/lambdaEscapeDoubleQuote}}{{/lambdaRemoveLineBreak}}{{/examples}}", {{returnType}}.class);
+	}
+	
+  {{/evaluate}}
+  {{#record}}
+	public {{returnType}} record(String id, {{#bodyParam}}{{baseType}}{{/bodyParam}} request){
+		return gson.fromJson("{{#examples}}{{#lambdaRemoveLineBreak}}{{#lambdaEscapeDoubleQuote}}{{{example}}}{{/lambdaEscapeDoubleQuote}}{{/lambdaRemoveLineBreak}}{{/examples}}", {{returnType}}.class);
+	}
+	
+  {{/record}}
+  {{#execute}}
+	public {{returnType}} execute(String id, {{#bodyParam}}{{baseType}}{{/bodyParam}} request){
+		return gson.fromJson("{{#examples}}{{#lambdaRemoveLineBreak}}{{#lambdaEscapeDoubleQuote}}{{{example}}}{{/lambdaEscapeDoubleQuote}}{{/lambdaRemoveLineBreak}}{{/examples}}", {{returnType}}.class);
+	}
+	
+  {{/execute}}
+ {{/actionTerms}}
+{{/operation}}
+}
+{{/operations}}
