@@ -4,9 +4,11 @@
 package {{package}};
 
 import com.google.gson.Gson;
+import org.springframework.stereotype.Service;
 import org.bian.dto.*;
 
 {{#operations}}
+@Service
 public class {{classname}}ServiceImpl implements {{classname}}Service {
 	private Gson gson = null;
 	

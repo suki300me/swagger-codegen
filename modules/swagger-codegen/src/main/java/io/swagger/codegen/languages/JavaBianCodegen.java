@@ -254,6 +254,9 @@ public class JavaBianCodegen extends AbstractJavaCodegen
             
           supportingFiles.add(new SupportingFile("application.java.mustache",
                   (sourceFolder + File.separator + basePackage).replace(".", java.io.File.separator), "Application.java"));
+
+          supportingFiles.add(new SupportingFile("application.mustache",
+                  ("src.main.resources").replace(".", java.io.File.separator), "application.properties"));
             
 //          supportingFiles.add(new SupportingFile("apiException.mustache",
 //                  (sourceFolder + File.separator + apiPackage).replace(".", java.io.File.separator), "ApiException.java"));
@@ -671,11 +674,11 @@ public class JavaBianCodegen extends AbstractJavaCodegen
         CodegenOperation op = super.fromOperation(path, httpMethod, operation, definitions, swagger);
         String[] urlChunks = StringUtils.split(op.path, "/");
 		if (urlChunks.length >= 3) {
-			op.serviceOperation = urlChunks[0];
-			op.controlRecord = urlChunks[1];
 			op.actionTermCamelCase = this.resolveActionTerm(WordUtils.uncapitalize(urlChunks[urlChunks.length - 1]));
 			op.actionTermTitleCase = StringUtils.capitalize(op.actionTermCamelCase);
 			op.actionTerms.put(op.actionTermCamelCase, true);
+            additionalProperties.put("serviceDomain", urlChunks[0]);
+            additionalProperties.put("controlRecord", urlChunks[1]);
 		}
         return op;
     }

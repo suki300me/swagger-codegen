@@ -25,7 +25,7 @@ public class {{classname}}Controller {
 	{{classname}}Service service;
 {{#operation}}
 	
-	@{{{actionTermTitleCase}}}(path = { "" })
+	@{{{actionTermTitleCase}}}()
 	public BianResponse<{{returnType}}> {{{actionTermCamelCase}}}(@PathVariable("id") String id, @RequestBody BianRequest<{{#bodyParam}}{{baseType}}{{/bodyParam}}> bianRequest) {
 		return BianResponse.forSuccess(service.{{{actionTermCamelCase}}}(id, bianRequest.getData()));
 	}
