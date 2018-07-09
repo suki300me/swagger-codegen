@@ -673,34 +673,56 @@ public class JavaBianCodegen extends AbstractJavaCodegen
     public CodegenOperation fromOperation(String path, String httpMethod, Operation operation, Map<String, Model> definitions, Swagger swagger) {
         CodegenOperation op = super.fromOperation(path, httpMethod, operation, definitions, swagger);
         String[] urlChunks = StringUtils.split(op.path, "/");
-		if (urlChunks.length >= 3) {
-			op.actionTermCamelCase = this.resolveActionTerm(WordUtils.uncapitalize(urlChunks[urlChunks.length - 1]));
+		if (urlChunks.length >= 2) {
+			op.actionTermCamelCase = this.resolveActionTerm(WordUtils.uncapitalize(urlChunks[urlChunks.length - 1]), op.httpMethod, urlChunks.length);
 			op.actionTermTitleCase = StringUtils.capitalize(op.actionTermCamelCase);
 			op.actionTerms.put(op.actionTermCamelCase, true);
             additionalProperties.put("serviceDomain", urlChunks[0]);
-            additionalProperties.put("controlRecord", urlChunks[1]);
+            if(urlChunks.length > 2) {
+            	additionalProperties.put("controlRecord", urlChunks[1]);
+            }
 		}
         return op;
     }
     
-    private String resolveActionTerm(String urlChunk) {
-    	switch(urlChunk) {
-    	case "initiation" : return "initiate";
-    	case "creation" : return "create";
-    	case "activation" : return "activate";
-    	case "registration" : return "register"; //??????????
-    	case "configuration" : return "configure";
-    	case "updation" : return "update";
-    	case "recording" : return "record";
-    	case "execution" : return "execute";
-    	case "evaluation" : return "evaluate";
-    	case "provision" : return "provide";
-    	case "authorization" : return "authorize";
-    	case "requisition" : return "request";
-    	case "arrangement" : return "terminate";
-    	case "notification" : return "notify";
-    	case "retrieve" : return "retrieve"; //?????????
-    	}
-    	return urlChunk;
+    private String resolveActionTerm(String urlChunk, String httpMethod, int urlChunkCount) {
+    	return 
+    		("initiation".equalsIgnoreCase(urlChunk) && "POST".equalsIgnoreCase(httpMethod) && urlChunkCount <= 3) ? "initiate" :
+    		("creation".equalsIgnoreCase(urlChunk) && "POST".equalsIgnoreCase(httpMethod) && urlChunkCount <= 3) ? "create" :
+    		("activation".equalsIgnoreCase(urlChunk) && "POST".equalsIgnoreCase(httpMethod) && urlChunkCount <= 3) ? "activate" :
+    		("registration".equalsIgnoreCase(urlChunk) && "POST".equalsIgnoreCase(httpMethod) && urlChunkCount <= 3) ? "register" :
+    		("configuration".equalsIgnoreCase(urlChunk) && "PUT".equalsIgnoreCase(httpMethod) && urlChunkCount <= 2) ? "configure" :
+    		("updation".equalsIgnoreCase(urlChunk) && "PUT".equalsIgnoreCase(httpMethod) && urlChunkCount <= 4) ? "update" :
+    		("recording".equalsIgnoreCase(urlChunk) && "POST".equalsIgnoreCase(httpMethod) && urlChunkCount <= 4) ? "record" :
+    		("execution".equalsIgnoreCase(urlChunk) && "POST".equalsIgnoreCase(httpMethod) && urlChunkCount <= 4) ? "execute" :
+    		("execution".equalsIgnoreCase(urlChunk) && "PUT".equalsIgnoreCase(httpMethod) && urlChunkCount <= 4) ? "execute" :
+    		("evaluation".equalsIgnoreCase(urlChunk) && "GET".equalsIgnoreCase(httpMethod) && urlChunkCount <= 4) ? "evaluate" :
+    		("provision".equalsIgnoreCase(urlChunk) && "POST".equalsIgnoreCase(httpMethod) && urlChunkCount <= 4) ? "provide" :
+    		("authorization".equalsIgnoreCase(urlChunk) && "PUT".equalsIgnoreCase(httpMethod) && urlChunkCount <= 4) ? "authorize" :
+    		("requisition".equalsIgnoreCase(urlChunk) && "POST".equalsIgnoreCase(httpMethod) && urlChunkCount <= 4) ? "request" :
+    		("DELETE".equalsIgnoreCase(httpMethod) && urlChunkCount <= 3) ? "terminate" :
+    		("notification".equalsIgnoreCase(urlChunk) && "POST".equalsIgnoreCase(httpMethod) && urlChunkCount <= 4) ? "notify" :
+    		("GET".equalsIgnoreCase(httpMethod) && urlChunkCount <= 3) ? "retrieve" :
+    		urlChunk;
+    	
+//    	switch(urlChunk + httpMethod + urlChunkCount) {
+//    	case "initiation" + "POST" + 3 : return "initiate";
+//    	case "creation" + "POST" + 3 : return "create";
+//    	case "activation" + "POST" + 3 : return "activate";
+//    	case "registration" + "POST" + 3 : return "register";
+//    	case "configuration" + "PUT" + 2 : return "configure";
+//    	case "updation" + "PUT" + 4 : return "update";
+//    	case "recording" + "POST" + 4 : return "record";
+//    	case "execution" + "POST" + 4 : return "execute";
+//    	case "execution" + "PUT" + 4 : return "execute";
+//    	case "evaluation" + "GET" + 4 : return "evaluate";
+//    	case "provision" + "POST" + 4 : return "provide";
+//    	case "authorization" + "PUT" + 4:  return "authorize";
+//    	case "requisition" + "POST" + 4 : return "request";
+//    	case "%" + "DELETE" + 3 : return "terminate";
+//    	case "notification" + "POST" + 4 : return "notify";
+//    	case "%" + "GET" + 3 : return "retrieve";
+//    	}
+//    	return urlChunk;
     }
 }
