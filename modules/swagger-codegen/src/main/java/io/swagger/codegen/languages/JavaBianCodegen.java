@@ -708,8 +708,8 @@ public class JavaBianCodegen extends AbstractJavaCodegen
 				Object previousControlRecord = additionalProperties.get("controlRecord");
 				if (previousControlRecord != null && !previousControlRecord.equals(urlChunks[1])) {
 					LOGGER.error("Service Domain is already set as '" + previousControlRecord
-							+ "'. A new Service Domain is declared in '" + op.path + "' and is not allowed.");
-					LOGGER.error("Continuing with the Service Domain " + previousControlRecord);
+							+ "'. A new Control Record is declared in '" + op.path + "' and is not allowed.");
+					LOGGER.error("Continuing with the Control Record " + previousControlRecord);
 				} else {
 					additionalProperties.put("controlRecord", urlChunks[1]);
 				}
