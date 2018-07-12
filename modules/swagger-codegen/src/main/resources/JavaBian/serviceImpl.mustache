@@ -6,6 +6,9 @@ package {{package}};
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 import org.bian.dto.*;
+import org.apache.commons.io.FileUtils;
+import java.io.File;
+import java.io.IOException;
 
 {{#operations}}
 @Service
@@ -18,7 +21,15 @@ public class {{classname}}ServiceImpl implements {{classname}}Service {
 
 {{#operation}}
 	public {{returnType}} {{{actionTermCamelCase}}}(String id, {{#bodyParam}}{{baseType}}{{/bodyParam}} request){
-		return gson.fromJson("{{#examples}}{{#lambdaRemoveLineBreak}}{{#lambdaEscapeDoubleQuote}}{{{example}}}{{/lambdaEscapeDoubleQuote}}{{/lambdaRemoveLineBreak}}{{/examples}}", {{returnType}}.class);
+		File file = new File("src/main/resources/{{returnBaseType}}.json");
+		String jsonString = "{}";
+		try {
+			jsonString = FileUtils.readFileToString(file, "UTF-8");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return gson.fromJson(jsonString, {{returnType}}.class);
+		//return gson.fromJson("{{#examples}}{{#lambdaRemoveLineBreak}}{{#lambdaEscapeDoubleQuote}}{{{example}}}{{/lambdaEscapeDoubleQuote}}{{/lambdaRemoveLineBreak}}{{/examples}}", {{returnType}}.class);
 	}
 
 {{/operation}}

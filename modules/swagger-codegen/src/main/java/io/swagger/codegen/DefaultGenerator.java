@@ -593,6 +593,7 @@ public class DefaultGenerator extends AbstractGenerator implements Generator {
         }
 
         for (SupportingFile support : config.supportingFiles()) {
+        	bundle.put("fileContent", bundle.get(support.destinationFilename));
             try {
                 String outputFolder = config.outputFolder();
                 if (StringUtils.isNotEmpty(support.folder)) {

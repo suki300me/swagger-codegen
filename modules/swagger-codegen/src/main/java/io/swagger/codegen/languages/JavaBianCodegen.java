@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -672,17 +673,49 @@ public class JavaBianCodegen extends AbstractJavaCodegen
     @Override
     public CodegenOperation fromOperation(String path, String httpMethod, Operation operation, Map<String, Model> definitions, Swagger swagger) {
         CodegenOperation op = super.fromOperation(path, httpMethod, operation, definitions, swagger);
+        this.generateActionTerm(op);
+        this.generateJsonExampleData(op);
+        return op;
+    }
+    
+	private void generateJsonExampleData(CodegenOperation op) {
+
+		String filenName = op.returnBaseType + ".json";
+		additionalProperties.put(filenName, op.examples.get(0).get("example"));
+        supportingFiles.add(new SupportingFile("json.mustache",
+                ("src.main.resources").replace(".", java.io.File.separator), filenName));
+
+//        apiTemplateFiles.put("json.mustache", filenName);
+        
+    }
+    
+    private void generateActionTerm(CodegenOperation op) {
         String[] urlChunks = StringUtils.split(op.path, "/");
 		if (urlChunks.length >= 2) {
-			op.actionTermCamelCase = this.resolveActionTerm(WordUtils.uncapitalize(urlChunks[urlChunks.length - 1]), op.httpMethod, urlChunks.length);
+			op.actionTermCamelCase = this.resolveActionTerm(WordUtils.uncapitalize(urlChunks[urlChunks.length - 1]),
+					op.httpMethod, urlChunks.length);
 			op.actionTermTitleCase = StringUtils.capitalize(op.actionTermCamelCase);
 			op.actionTerms.put(op.actionTermCamelCase, true);
-            additionalProperties.put("serviceDomain", urlChunks[0]);
-            if(urlChunks.length > 2) {
-            	additionalProperties.put("controlRecord", urlChunks[1]);
-            }
+			Object previousServiceDomain = additionalProperties.get("serviceDomain");
+			if (previousServiceDomain != null && !previousServiceDomain.equals(urlChunks[0])) {
+				LOGGER.error("Service Domain is already set as '" + previousServiceDomain
+						+ "'. A new Service Domain is declared in '" + op.path + "' and is not allowed.");
+				LOGGER.error("Continuing with the Service Domain " + previousServiceDomain);
+			} else {
+				additionalProperties.put("serviceDomain", urlChunks[0]);
+			}
+			if (urlChunks.length > 2) {
+				Object previousControlRecord = additionalProperties.get("controlRecord");
+				if (previousControlRecord != null && !previousControlRecord.equals(urlChunks[1])) {
+					LOGGER.error("Service Domain is already set as '" + previousControlRecord
+							+ "'. A new Service Domain is declared in '" + op.path + "' and is not allowed.");
+					LOGGER.error("Continuing with the Service Domain " + previousControlRecord);
+				} else {
+					additionalProperties.put("controlRecord", urlChunks[1]);
+				}
+			}
 		}
-        return op;
+    	
     }
     
     private String resolveActionTerm(String urlChunk, String httpMethod, int urlChunkCount) {
